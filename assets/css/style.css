@@ -639,7 +639,7 @@ a {
 .timeline .timeline-panel {
   display: flex;
   align-items: center;
-  border-bottom: 1px solid #eaeaea;
+  border-bottom: 1px solid var(--border-color);
   padding-bottom: 15px;
   margin-bottom: 15px;
 }

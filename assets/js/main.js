@@ -60,6 +60,11 @@ class AdminDashboard {
       modals: document.querySelectorAll(".modal"),
       calendarEl: document.getElementById("calendar"),
       eventModalEl: document.getElementById("eventModal"),
+      themeToggle: document.getElementById("themeToggle"),
+      passwordInput: document.getElementById("password"),
+      passwordIcon: document.getElementById("passwordIcon"),
+      loginCard: document.querySelector(".login-card"),
+      formControls: document.querySelectorAll(".form-control"),
     };
   }
 
@@ -83,43 +88,61 @@ class AdminDashboard {
     this.initCalendar();
     this.initEventListeners();
     this.DarkAndLight();
+    this.entranceAnimation();
+    this.initPasswordToggle();
+    this.initFloatingLabels();
+    this.initLoginCardAnimation();
   }
 
   DarkAndLight() {
-    const themeToggle = document.getElementById("themeToggle");
-    const root = document.documentElement;
-    const sunIcon = themeToggle.querySelector(".sun-icon");
-    const moonIcon = themeToggle.querySelector(".moon-icon");
-
-    function updateIcons(isDark) {
-      if (isDark) {
-        sunIcon.classList.add("d-none");
-        moonIcon.classList.remove("d-none");
-      } else {
-        sunIcon.classList.remove("d-none");
-        moonIcon.classList.add("d-none");
+    if (this.elements.themeToggle) {
+      const root = document.documentElement;
+      const sunIcon = this.elements.themeToggle.querySelector(".sun-icon");
+      const moonIcon = this.elements.themeToggle.querySelector(".moon-icon");
+      function updateIcons(isDark) {
+        if (isDark) {
+          sunIcon.classList.add("d-none");
+          moonIcon.classList.remove("d-none");
+        } else {
+          sunIcon.classList.remove("d-none");
+          moonIcon.classList.add("d-none");
+        }
       }
-    }
 
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme) {
-      root.setAttribute("data-bs-theme", savedTheme);
-      updateIcons(savedTheme === "dark");
-    } else {
-      const prefersDark = window.matchMedia(
-        "(prefers-color-scheme: dark)"
-      ).matches;
-      root.setAttribute("data-bs-theme", prefersDark ? "dark" : "light");
-      updateIcons(prefersDark);
-    }
+      const savedTheme = localStorage.getItem("theme");
+      if (savedTheme) {
+        root.setAttribute("data-bs-theme", savedTheme);
+        updateIcons(savedTheme === "dark");
+      } else {
+        const prefersDark = window.matchMedia(
+          "(prefers-color-scheme: dark)"
+        ).matches;
+        root.setAttribute("data-bs-theme", prefersDark ? "dark" : "light");
+        updateIcons(prefersDark);
+      }
 
-    themeToggle.addEventListener("click", () => {
-      const isDark = root.getAttribute("data-bs-theme") === "dark";
-      const newTheme = isDark ? "light" : "dark";
-      root.setAttribute("data-bs-theme", newTheme);
-      updateIcons(newTheme === "dark");
-      localStorage.setItem("theme", newTheme);
-    });
+      themeToggle.addEventListener("click", () => {
+        const isDark = root.getAttribute("data-bs-theme") === "dark";
+        const newTheme = isDark ? "light" : "dark";
+        root.setAttribute("data-bs-theme", newTheme);
+        updateIcons(newTheme === "dark");
+        localStorage.setItem("theme", newTheme);
+      });
+    }
+  }
+
+  entranceAnimation() {
+    const errorContent = document.querySelector(".error-content");
+    if (errorContent) {
+      errorContent.style.opacity = "0";
+      errorContent.style.transform = "translateY(50px)";
+
+      setTimeout(() => {
+        errorContent.style.transition = "all 0.8s ease";
+        errorContent.style.opacity = "1";
+        errorContent.style.transform = "translateY(0)";
+      }, 200);
+    }
   }
 
   // Preloader initialization
@@ -296,9 +319,13 @@ class AdminDashboard {
   }
 
   closeMobileSidebar() {
-    this.elements.sidebar.classList.remove("sidebar-visible");
-    this.overlay.classList.remove("overlay-visible");
-    this.overlay.classList.add("overlay-hidden");
+    if(this.elements.sidebar){
+      this.elements.sidebar.classList.remove("sidebar-visible");
+    }
+    if(this.overlay.classList){
+      this.overlay.classList.remove("overlay-visible");
+      this.overlay.classList.add("overlay-hidden");
+    }
     this.state.mobileOverlayVisible = false;
   }
 
@@ -1192,6 +1219,49 @@ class AdminDashboard {
         if (modal.classList.contains("show")) {
           modal.classList.remove("show");
         }
+      });
+    }
+  }
+
+  // Toggle password visibility
+  initPasswordToggle() {
+    if (this.elements.passwordInput && this.elements.passwordIcon) {
+      this.elements.passwordIcon.addEventListener("click", () => {
+        const isPassword = this.elements.passwordInput.type === "password";
+        this.elements.passwordInput.type = isPassword ? "text" : "password";
+        this.elements.passwordIcon.classList.toggle("fa-eye", !isPassword);
+        this.elements.passwordIcon.classList.toggle("fa-eye-slash", isPassword);
+      });
+    }
+  }
+
+  // Floating label animation
+  initFloatingLabels() {
+    if (this.elements.formControls.length) {
+      this.elements.formControls.forEach((input) => {
+        input.addEventListener("focus", function () {
+          this.parentElement.classList.add("focused");
+        });
+        input.addEventListener("blur", function () {
+          if (!this.value) {
+            this.parentElement.classList.remove("focused");
+          }
+        });
+      });
+    }
+  }
+
+  // Smooth login card animation on page load
+  initLoginCardAnimation() {
+    if (this.elements.loginCard) {
+      window.addEventListener("load", () => {
+        this.elements.loginCard.style.opacity = "0";
+        this.elements.loginCard.style.transform = "translateY(30px)";
+        setTimeout(() => {
+          this.elements.loginCard.style.transition = "all 0.6s ease";
+          this.elements.loginCard.style.opacity = "1";
+          this.elements.loginCard.style.transform = "translateY(0)";
+        }, 100);
       });
     }
   }
