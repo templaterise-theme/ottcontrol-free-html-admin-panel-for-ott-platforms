@@ -1,7 +1,7 @@
 /* 
-Name                 : OTTControl – Bootstrap CRM & Project Management Admin Template
+Name                 : VidManage – Bootstrap CRM & Project Management Admin Template
 Author               : TemplateRise
-Url                  : https://www.templaterise.com/template/OTTControl-bootstrap-crm-project-management-admin-template
+Url                  : https://www.templaterise.com/template/VidManage-bootstrap-crm-project-management-admin-template
 */
 
 
